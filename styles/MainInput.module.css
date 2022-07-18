@@ -1,0 +1,46 @@
+.textarea_container {
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.textarea_styling {
+	height: unset;
+	min-width: unset;
+	width: auto;
+	display: block;
+	overflow: hidden;
+	border: none;
+	outline: none;
+
+	background: none;
+	margin: 0;
+	padding: 0;
+
+	/* position: absolute; */
+}
+
+.textarea_box {
+	/* padding: 1em; */
+	/* position: relative; */
+	padding: 0;
+}
+
+.pre {
+	outline: none;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.code_input {
+	outline: none;
+	margin: 0;
+	padding: 0;
+}
