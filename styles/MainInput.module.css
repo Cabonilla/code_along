@@ -5,42 +5,86 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	position: relative;
 }
 
-.textarea_styling {
-	height: unset;
-	min-width: unset;
-	width: auto;
-	display: block;
-	overflow: hidden;
-	border: none;
-	outline: none;
-
-	background: none;
-	margin: 0;
-	padding: 0;
-
-	/* position: absolute; */
-}
-
-.textarea_box {
-	/* padding: 1em; */
-	/* position: relative; */
-	padding: 0;
-}
-
-.pre {
-	outline: none;
-
+.textarea_container > h2 {
 	position: absolute;
 	top: 0;
 	left: 0;
-	margin: 0;
-	padding: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 3em;
+	font-family: monospace;
 }
 
-.code_input {
-	outline: none;
-	margin: 0;
+.textarea_box {
 	padding: 0;
+	min-width: 200px;
+	position: relative;
+}
+
+.text_area {
+	outline: none;
+}
+
+.text_area_locked {
+	outline: none;
+}
+
+.pre_area_locked {
+	color: lightgray;
+	/* position: absolute !important; */
+}
+
+.pre_area_locked > * {
+	color: lightgray !important;
+}
+
+.locked_entry {
+	border: none;
+	position: absolute;
+	outline: none;
+	z-index: 10;
+	background: transparent;
+}
+
+.text_area_locked {
+	display: none !important;
+}
+
+.icon_set {
+	display: flex;
+	justify-content: right;
+	gap: .75em;
+	position: absolute;
+	/* top: 1em; */
+	right: 0em;
+	top: -1em;
+}
+
+.lockIcon {
+	color: black;
+}
+
+.lockIcon, .unlockIcon {
+	width: 12.5px;
+	height: auto;
+}
+
+/* .lockIcon:hover, .unlockIcon:hover {
+	color: gray;
+} */
+
+.unlockIcon {
+	color: lightgray
+}
+
+.timeIcon {
+	color: lightgray;
+}
+
+.timingIcon {
+	color: black;
 }

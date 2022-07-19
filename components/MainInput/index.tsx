@@ -1,74 +1,102 @@
-import React, { useRef, useState } from 'react';
+import { faClock, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { highlight, languages } from 'prismjs';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/themes/prism.css';
+import { useEffect, useState } from 'react';
+import Editor from 'react-simple-code-editor';
 import mainInputStyles from '../../styles/MainInput.module.css';
 
 const MainInput = () => {
-  const [textHeight, setTextHeight] = useState<number>(0);
-  const [textWidth, setTextWidth] = useState<number>(40);
   const [currInput, setCurrInput] = useState<string>("")
+  const [lockedInput, setLockedInput] = useState<string>("");
+  const [comparedInput, setComparedInput] = useState<string>("")
+  const [lock, setLock] = useState<boolean>(false);
+  const [timed, setTimed] = useState<boolean>(false);
 
-  const textParams = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    let placeholderText = document.querySelector(".npm__react-simple-code-editor__textarea")!
+    placeholderText.setAttribute("placeholder", "Enter your code here.")
+  }, [])
 
-  const expandingTextArea = (e: React.ChangeEvent<any>) => {
-    const height = e.target.scrollHeight;
-    const width = e.target.scrollWidth;
+  const lockInput = () => {
 
-    console.log("Height: ", height)
-    console.log("Width: ", width);
+    setLock(!lock);
 
-    const rowHeight = 15;
-    const rowWidth = 7;
-
-    const trows = Math.ceil(height / rowHeight);
-    const tcols = Math.ceil(width / rowWidth) - 3;
-
-    console.log("Rows: ", trows)
-    console.log("Cols: ", tcols);
-
-    if (trows != textHeight) {
-      setTextHeight(trows);
+    if (!lock) {
+      setLockedInput(currInput);
     }
 
-    if (tcols != textWidth) {
-      setTextWidth(tcols);
-    }
-
-    const input = e.target.value
-    setCurrInput(input)
-
-    let currRows = input.split(/\r\n|\r|\n/).length
-    let currCols = input.length - 3
-
-    if (currRows <= 10) {
-      setTextHeight(10);
-    }
-
-    if (currCols <= 40) {
-      setTextWidth(40)
-    }
-
-    console.log(textParams.current!.style.width)
+    console.log(lockInput);
   }
+
+  const timeInput = () => {
+    setTimed(!timed);
+  }
+
+  // console.log(lockedInput.split(''));
+  console.log("isLocked: ", lock)
 
   return (
     <div className={mainInputStyles.textarea_container}>
+      <h2>CodeAlong</h2>
       <div className={mainInputStyles.textarea_box}>
-        {/* <pre contentEditable={true} className={mainInputStyles.pre}>
-          <code className={mainInputStyles.code_input}>
-            {currInput}
-          </code>
-        </pre> */}
-        <div className={mainInputStyles.text_display}></div>
-        <textarea
-          className={mainInputStyles.textarea_styling}
-          placeholder="Enter code here."
-          onChange={(e) => expandingTextArea(e)}
-          rows={textHeight}
-          cols={textWidth}
+        <div className={mainInputStyles.icon_set}>
+          {
+            currInput.length === 0
+              ? null
+              : <FontAwesomeIcon
+                icon={faClock}
+                className={timed ? mainInputStyles.timingIcon : mainInputStyles.timeIcon}
+                onClick={() => timeInput()}
+              />
+          }
+          {
+            currInput.length === 0
+              ? null
+              : <FontAwesomeIcon
+                className={lock ? mainInputStyles.lockIcon : mainInputStyles.unlockIcon}
+                icon={lock ? faLock : faUnlock}
+                onClick={() => lockInput()}
+              />
+          }
+        </div>
+        <Editor
           value={currInput}
-          wrap="off"
-          ref={textParams}
-        >
-        </textarea>
+          onValueChange={code => setCurrInput(code)}
+          highlight={code => highlight(code, languages.python, 'python')}
+          tabSize={4}
+          padding={10}
+          style={{
+            fontFamily: '"Fira code", "Fira Mono", monospace',
+            fontSize: 14,
+          }}
+          textareaClassName={mainInputStyles.text_area}
+          preClassName={mainInputStyles.pre_area}
+          textareaId={mainInputStyles.text_area_id}
+        />
+
+        {lock ?
+          <Editor
+            value={lockedInput}
+            onValueChange={code => setComparedInput(code)}
+            highlight={code => highlight(code, languages.python, 'python')}
+            tabSize={4}
+            padding={10}
+            style={{
+              fontFamily: '"Fira code", "Fira Mono", monospace',
+              fontSize: 14,
+              position: 'absolute',
+              top: 0,
+              // zIndex: -1,
+            }}
+            textareaClassName={mainInputStyles.text_area_locked}
+            preClassName={mainInputStyles.pre_area_locked}
+            textareaId={mainInputStyles.text_area_id_locked}
+          />
+          : null}
       </div>
     </div>
   )
