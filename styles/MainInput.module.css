@@ -21,7 +21,8 @@
 
 .textarea_box {
 	padding: 0;
-	min-width: 200px;
+	min-width: 225px;
+	max-width: 80vw;
 	position: relative;
 }
 
@@ -29,7 +30,7 @@
 	outline: none;
 }
 
-.text_area_locked {
+.text_area_locked, .text_area_compared {
 	outline: none;
 }
 
@@ -40,6 +41,23 @@
 
 .pre_area_locked > * {
 	color: lightgray !important;
+}
+
+.pre_area_compared_correct {
+	color: green;
+	/* position: absolute !important; */
+}
+
+.pre_area_compared_correct > * {
+	color: green !important;
+}
+
+.pre_area_compared_incorrect {
+	color: red !important;
+}
+
+.pre_area_compared_incorrect > * {
+	color: red !important;
 }
 
 .locked_entry {
@@ -61,11 +79,7 @@
 	position: absolute;
 	/* top: 1em; */
 	right: 0em;
-	top: -1em;
-}
-
-.lockIcon {
-	color: black;
+	top: -1.25em;
 }
 
 .lockIcon, .unlockIcon {
@@ -73,18 +87,14 @@
 	height: auto;
 }
 
-/* .lockIcon:hover, .unlockIcon:hover {
-	color: gray;
-} */
+.lockIcon, .unlockIcon, .timeIcon, .timingIcon, .cogIcon, .settingIcon {
+	cursor: pointer;
+}
 
-.unlockIcon {
+.unlockIcon, .cogIcon, .timeIcon {
 	color: lightgray
 }
 
-.timeIcon {
-	color: lightgray;
-}
-
-.timingIcon {
+.timingIcon, .settingIcon, .lockIcon {
 	color: black;
 }
