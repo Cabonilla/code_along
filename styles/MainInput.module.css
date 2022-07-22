@@ -9,7 +9,7 @@
 	position: relative;
 }
 
-.textarea_container > h2 {
+.textarea_container>h2 {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -39,7 +39,7 @@
 	/* position: absolute !important; */
 }
 
-.pre_area_locked > * {
+.pre_area_locked>* {
 	color: lightgray !important;
 }
 
@@ -48,15 +48,16 @@
 	/* position: absolute !important; */
 }
 
-.pre_area_compared_correct > * {
+.pre_area_compared_correct>* {
 	color: green !important;
 }
 
 .pre_area_compared_incorrect {
 	color: red !important;
+	background-color: white;
 }
 
-.pre_area_compared_incorrect > * {
+.pre_area_compared_incorrect>* {
 	color: red !important;
 }
 
@@ -87,14 +88,27 @@
 	height: auto;
 }
 
-.lockIcon, .unlockIcon, .timeIcon, .timingIcon, .cogIcon, .settingIcon {
+.lockIcon, .unlockIcon, .timeIcon, .timingIcon, .cogIcon, .settingIcon, .clipboard {
 	cursor: pointer;
+	outline: none;
 }
 
-.unlockIcon, .cogIcon, .timeIcon {
+.unlockIcon, .cogIcon, .timeIcon, .clipboard {
 	color: lightgray
+}
+
+.clipboard:hover {
+	color: black;
 }
 
 .timingIcon, .settingIcon, .lockIcon {
 	color: black;
+}
+
+.stopWatch {
+	position: absolute;
+	right: 0em;
+	top: -3.5em;
+
+	font-family: monospace;
 }

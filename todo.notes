@@ -14,6 +14,10 @@ Activity Log:
 Notes:
 Ideas:
 TODO:
+[ ] Finish timing function.
+[ ] Finish saving function.
+[ ] Finish settings w/ different UI's, languages, etc.
+[ ] Allow for saving code snippets a la Carbon.
 Activity Log:
 [Block 1]
-- 
+- Finished basic UI functionality. 

@@ -1,4 +1,4 @@
-import { faClock, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faClock, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -8,6 +8,7 @@ import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import mainInputStyles from '../../styles/MainInput.module.css';
+import Stopwatch from '../StopWatch/StopWatch';
 
 const MainInput = () => {
   const [currInput, setCurrInput] = useState<string>("")
@@ -19,13 +20,73 @@ const MainInput = () => {
   const [currLanguage, setCurrLanguage] = useState<string>("python");
   const [correctChar, setCorrectChar] = useState<boolean>(true);
 
-  const [startTime, setStartTime] = useState<number>(0)
-  const [endTime, setEndTime] = useState<number>(0)
+  const [nowTiming, setNowTiming] = useState<boolean>(false);
+  const [resetTiming, setResetTiming] = useState<boolean>(false);
 
   useEffect(() => {
-    let placeholderText = document.querySelector(".npm__react-simple-code-editor__textarea")!
-    placeholderText.setAttribute("placeholder", "Enter your code here.")
+    let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
+    if (placeholderText) {
+      placeholderText.setAttribute("placeholder", "Enter your code here.")
+    }
   }, [lock])
+
+  const exampleCode = () => {
+    !lock ?
+      setCurrInput(
+        `def binary_search(lst, target):
+    start = 0
+    end = len(lst) - 1
+    while(start <= end):
+        mid = (start + end) // 2
+        if(lst[mid] > target):
+            end = mid - 1
+        elif(lst[mid] < target):
+            start = mid + 1
+        else:
+            return mid
+    return None`)
+      : null
+  }
+
+
+  const compareArrs = (a: Array<string>, b: Array<string>) => {
+    return a.every((char, idx) => char === b[idx])
+  }
+
+  const compareCode = (code: string) => {
+    setComparedInput(code);
+    let lockedInputValue = lockedInput.split('')
+    let comparedInputValue = code.split('')
+    console.log("lockedLength: ", lockedInputValue.length)
+
+    let comparedInputIndex = comparedInputValue.length - 1
+    let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
+    // console.log(comparedInputValue)
+    // console.log(comparedInputIndex)
+    console.log("slicedLockLength: ", slicedLocked.length)
+
+    if (lock && timed) {
+      setResetTiming(false);
+
+      if (slicedLocked.length > 0) {
+        setNowTiming(true)
+
+        if (slicedLocked.length === lockedInputValue.length) {
+          setNowTiming(false)
+        }
+      } 
+
+      if (slicedLocked.length === 0) {
+        setResetTiming(true);
+      }
+    }
+
+    if (compareArrs(slicedLocked, comparedInputValue)) {
+      setCorrectChar(true)
+    } else {
+      setCorrectChar(false);
+    }
+  }
 
   const lockInput = () => {
 
@@ -41,53 +102,49 @@ const MainInput = () => {
 
   const timeInput = () => {
     setTimed(!timed);
+    setLock(true);
+
+    if (!lock) {
+      setLockedInput(currInput);
+      setComparedInput('');
+    }
   }
 
   const settingInput = () => {
     setSettings(!settings)
   }
 
-  const compareArrs = (a: Array<string>, b: Array<string>) => {
-    if (a.every((char, idx) => char === b[idx])) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  const compareCode = (code: string) => {
-    setComparedInput(code);
-    let lockedInputValue = lockedInput.split('')
-    let comparedInputValue = code.split('')
-    console.log(lockedInputValue.length)
-
-    let comparedInputIndex = comparedInputValue.length - 1
-    let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
-    // console.log(comparedInputValue)
-    // console.log(comparedInputIndex)
-    console.log(slicedLocked.length)
-
-    if (compareArrs(slicedLocked, comparedInputValue)) {
-      setCorrectChar(true)
-    } else {
-      setCorrectChar(false);
-    }
-  }
-
   return (
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
       <div className={mainInputStyles.textarea_box}>
+        {timed
+          ? <Stopwatch
+            nowTiming={nowTiming}
+            resetTiming={resetTiming}
+          />
+          : null
+        }
         {
           currInput.length === 0
             ? null
             : <div className={mainInputStyles.icon_set}>
               <FontAwesomeIcon
                 className={
+                  mainInputStyles.clipboard
+                }
+                icon={faClipboard}
+                onClick={() => exampleCode()}
+                data-tip="Example code."
+                data-for="clipboard_tool"
+              />
+
+              <FontAwesomeIcon
+                className={
                   // settings 
                   // ? mainInputStyles.settingIcon 
                   // : mainInputStyles.cogIcon
-                  mainInputStyles.cogIcon 
+                  mainInputStyles.cogIcon
                 }
                 icon={faGear}
                 onClick={() => settingInput()}
@@ -95,11 +152,15 @@ const MainInput = () => {
 
               <FontAwesomeIcon
                 icon={faClock}
-                className={timed ? mainInputStyles.timingIcon : mainInputStyles.timeIcon}
+                className={timed
+                  ? mainInputStyles.timingIcon
+                  : mainInputStyles.timeIcon}
                 onClick={() => timeInput()}
               />
               <FontAwesomeIcon
-                className={lock ? mainInputStyles.lockIcon : mainInputStyles.unlockIcon}
+                className={lock
+                  ? mainInputStyles.lockIcon
+                  : mainInputStyles.unlockIcon}
                 icon={lock ? faLock : faUnlock}
                 onClick={() => lockInput()}
               />
@@ -130,9 +191,6 @@ const MainInput = () => {
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
               fontSize: 16,
-              // position: 'absolute',
-              // top: 0,
-              // zIndex: -1,
             }}
             textareaClassName={mainInputStyles.text_area_locked}
             preClassName={mainInputStyles.pre_area_locked}
@@ -152,7 +210,6 @@ const MainInput = () => {
               fontSize: 16,
               position: 'absolute',
               top: 0,
-              // zIndex: -1,
             }}
             textareaClassName={mainInputStyles.text_area_compared}
             preClassName={
