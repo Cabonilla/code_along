@@ -68,17 +68,20 @@ const MainInput = () => {
 
   const setCorrect = (original: string[], compared: string[]) => {
     if (compareArrs(original, compared)) {
-      console.log(original)
-      console.log(compared)
-      console.log(correctChar)
       setCorrectChar((prev) => prev = true)
     } else {
-      console.log(original)
-      console.log(compared)
-      console.log(correctChar)
       setCorrectChar((prev) => prev = false);
     }
   }
+
+  useEffect(() => {
+    if (lockedInput.length === comparedInput.length) {
+      if (lockedInput !== comparedInput) {
+        setNowTiming(true)
+      }
+    }  
+  }, [lockedInput, comparedInput])
+
 
   const compareCode = (code: string) => {
     setComparedInput(code);
@@ -104,6 +107,8 @@ const MainInput = () => {
           slicedLocked.length === lockedInputValue.length
           && correctChar
         ) {
+          // console.log(comparedInput)
+          // console.log(lockedInput)
           setNowTiming(false)
           // console.log(correctChar);
           // console.log(getTime)
@@ -114,7 +119,6 @@ const MainInput = () => {
         setResetTiming(true);
       }
     }
-
     // if (compareArrs(slicedLocked, comparedInputValue)) {
     //   setCorrectChar((prev) => prev = true)
     // } else {
@@ -228,10 +232,9 @@ const MainInput = () => {
 
               <FontAwesomeIcon
                 className={
-                  // settings 
-                  // ? mainInputStyles.settingIcon 
-                  // : mainInputStyles.cogIcon
-                  mainInputStyles.cogIcon
+                  settings 
+                  ? mainInputStyles.settingIcon 
+                  : mainInputStyles.cogIcon
                 }
                 icon={faGear}
                 onClick={() => settingInput()}
@@ -308,7 +311,17 @@ const MainInput = () => {
           />
           : null}
       </div>
-      <SideBar storedInputs={storedInputs} setStoredInputs={setStoredInputs} setCurrInput={setCurrInput} currInput={currInput} />
+      {settings 
+      ? <SideBar
+        storedInputs={storedInputs}
+        setStoredInputs={setStoredInputs}
+        setCurrInput={setCurrInput}
+        currInput={currInput}
+        setTimed={setTimed}
+        setLock={setLock}
+      />
+      : null
+      }
     </div>
   )
 }

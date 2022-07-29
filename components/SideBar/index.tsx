@@ -21,6 +21,8 @@ const SideBar = (props: any) => {
 		// }
 
 		props.setCurrInput(currHover);
+		props.setTimed(false);
+		props.setLock(false);
 	}
 
 	const clearLocal = () => {
@@ -28,7 +30,7 @@ const SideBar = (props: any) => {
 		props.setStoredInputs([])
 	}
 
-	const diag = async (e: any) => {
+	const hoverSelection = async (e: any) => {
 		let selection = e.target.childNodes[0].innerText
 		if (selection !== undefined) {
 			setCurrHover(selection.toString())
@@ -51,7 +53,7 @@ const SideBar = (props: any) => {
 								key={key}
 								className={mainInputStyles.saved_snippet}
 								onClick={(e) => localReplace(e)}
-								onMouseEnter = {(e) => diag(e)}
+								onMouseEnter = {(e) => hoverSelection(e)}
 							>
 								<code key={key}>
 									{props.storedInputs[key]}
