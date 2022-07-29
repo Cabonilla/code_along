@@ -49,6 +49,10 @@ const StopWatch = (props: any) => {
 		setTime(0);
 	};
 
+	if (!props.lockedInput) {
+		props.setLockedInput(false);
+	}
+
 	return (
 		<div className={mainInputStyles.stopWatch}>
 			<Timer time={time} />

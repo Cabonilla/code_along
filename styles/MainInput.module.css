@@ -112,3 +112,69 @@
 
 	font-family: monospace;
 }
+
+.save {
+	color: lightgray;
+	cursor: pointer;
+}
+
+.save:hover {
+	color: black;
+}
+
+.sidebar {
+	background-color: transparent;
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100vh;
+	width: 20vw;
+}
+
+.snippet_box {
+	height: 40vh;
+	overflow-x: none;
+	overflow-y: scroll;
+	/* display: flex;
+	flex-direction: column;
+	gap: 1em; */
+}
+
+.saved_snippets > p {
+	font-family: monospace;
+}
+
+.saved_snippet {
+	background-color: rgba(0,0,0,0.10);
+	border-radius: 3px;
+	cursor: pointer;
+	padding: 1em;
+	margin: 0 1em 1em 0;
+	font-size: .75em;
+	overflow: hidden;
+}
+
+.saved_snippet:hover {
+	background-color: rgba(0,0,0,0.05);
+	color: rgba(0,0,0,0.25);
+}
+
+.sidebar_header {
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	margin: 1em 0em .5em 0em;
+}
+
+.sidebar_header > p {
+	margin: 0;
+}
+
+.sidebar_header > svg {
+	color: lightgray;
+}
+
+.sidebar_header > svg:hover {
+	color: black;
+}
+

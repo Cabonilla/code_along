@@ -3,21 +3,29 @@ Notes:
 - Need to fix the logic for icons appearing, and positioning shouldn't affect input. 
 Ideas:
 TODO:
-[ ] Get basic UI and functionality right.
-[ ] Get color right.
-[ ] Build timer.
+[√] Get basic UI and functionality right.
+[√] Get color right.
+[√] Build timer.
 Activity Log:
-[Block 1]
+(Block 1)
 - Very basic UI done, and input done. Now, adding basic functionality (copy of input to grayed out).
 
 [2022-07-20]
 Notes:
 Ideas:
 TODO:
-[ ] Finish timing function.
+[√] Finish timing function.
 [ ] Finish saving function.
 [ ] Finish settings w/ different UI's, languages, etc.
 [ ] Allow for saving code snippets a la Carbon.
 Activity Log:
-[Block 1]
+(Block 1)
 - Finished basic UI functionality. 
+
+[2022-07-27]
+Notes:
+Ideas:
+TODO:
+Activity Log:
+(Block 1)
+- Worked out the kinks with adding local storage and selecting input. Now, fixing minor glitch with timing. 

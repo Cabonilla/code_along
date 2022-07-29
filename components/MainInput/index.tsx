@@ -1,4 +1,4 @@
-import { faClipboard, faClock, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faClock, faFloppyDisk, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -8,7 +8,9 @@ import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import mainInputStyles from '../../styles/MainInput.module.css';
-import Stopwatch from '../StopWatch/StopWatch';
+import '../SideBar/index';
+import SideBar from '../SideBar/index';
+import Stopwatch from '../StopWatch/index';
 
 const MainInput = () => {
   const [currInput, setCurrInput] = useState<string>("")
@@ -23,6 +25,36 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
+  // const [storedInputs, setStoredInputs] = useState<any>(() => {
+  //   const localData = localStorage.getItem('snippets');
+  //   return localData ? JSON.parse(localData) : [];
+  // })
+
+  const [storedInputs, setStoredInputs] = useState<any>([])
+
+  useEffect(() => {
+    const data: any = localStorage.getItem("snippets")
+    // console.log("Stored Data: ", data);
+    if (data !== undefined) {
+      setStoredInputs(JSON.parse(data))
+    }
+  }, [])
+
+  const saveCode = () => {
+    setStoredInputs((prevState: any) => [...prevState, currInput])
+  }
+
+  useEffect(() => {
+    localStorage.setItem('snippets', JSON.stringify(storedInputs))
+  }, [storedInputs])
+
+  // useEffect(() => {
+  //   const localData = localStorage.getItem('snippets');
+  //   setStoredInputs(localData ? JSON.parse(localData) : [])
+  // }, [])
+
+  // const [storedInputs, setStoredInputs] = useLocalStorage("snippets")
+
   useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
     if (placeholderText) {
@@ -30,9 +62,71 @@ const MainInput = () => {
     }
   }, [lock])
 
+  const compareArrs = (a: Array<string>, b: Array<string>) => {
+    return a.every((char, idx) => char === b[idx])
+  }
+
+  const setCorrect = (original: string[], compared: string[]) => {
+    if (compareArrs(original, compared)) {
+      console.log(original)
+      console.log(compared)
+      console.log(correctChar)
+      setCorrectChar((prev) => prev = true)
+    } else {
+      console.log(original)
+      console.log(compared)
+      console.log(correctChar)
+      setCorrectChar((prev) => prev = false);
+    }
+  }
+
+  const compareCode = (code: string) => {
+    setComparedInput(code);
+    let lockedInputValue = lockedInput.split('')
+    let comparedInputValue = code.split('')
+    // console.log("lockedLength: ", lockedInputValue.length)
+
+    let comparedInputIndex = comparedInputValue.length - 1
+    let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
+    // console.log(comparedInputValue)
+    // console.log(comparedInputIndex)
+    // console.log("slicedLockLength: ", slicedLocked.length)
+    // console.log(correctChar);
+
+    if (lock && timed) {
+      setResetTiming(false);
+
+      if (slicedLocked.length > 0) {
+        setNowTiming(true)
+        // console.log(lockedInput === comparedInput)
+
+        if (
+          slicedLocked.length === lockedInputValue.length
+          && correctChar
+        ) {
+          setNowTiming(false)
+          // console.log(correctChar);
+          // console.log(getTime)
+        }
+      }
+
+      if (slicedLocked.length === 0) {
+        setResetTiming(true);
+      }
+    }
+
+    // if (compareArrs(slicedLocked, comparedInputValue)) {
+    //   setCorrectChar((prev) => prev = true)
+    // } else {
+    //   setCorrectChar((prev) => prev = false);
+    // }
+
+    setCorrect(slicedLocked, comparedInputValue);
+  }
+
   const exampleCode = () => {
-    !lock ?
-      setCurrInput(
+    if (!lock) {
+      setCurrInput((prev) => prev =
         `def binary_search(lst, target):
     start = 0
     end = len(lst) - 1
@@ -45,46 +139,7 @@ const MainInput = () => {
         else:
             return mid
     return None`)
-      : null
-  }
-
-
-  const compareArrs = (a: Array<string>, b: Array<string>) => {
-    return a.every((char, idx) => char === b[idx])
-  }
-
-  const compareCode = (code: string) => {
-    setComparedInput(code);
-    let lockedInputValue = lockedInput.split('')
-    let comparedInputValue = code.split('')
-    console.log("lockedLength: ", lockedInputValue.length)
-
-    let comparedInputIndex = comparedInputValue.length - 1
-    let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
-    // console.log(comparedInputValue)
-    // console.log(comparedInputIndex)
-    console.log("slicedLockLength: ", slicedLocked.length)
-
-    if (lock && timed) {
-      setResetTiming(false);
-
-      if (slicedLocked.length > 0) {
-        setNowTiming(true)
-
-        if (slicedLocked.length === lockedInputValue.length) {
-          setNowTiming(false)
-        }
-      } 
-
-      if (slicedLocked.length === 0) {
-        setResetTiming(true);
-      }
-    }
-
-    if (compareArrs(slicedLocked, comparedInputValue)) {
-      setCorrectChar(true)
-    } else {
-      setCorrectChar(false);
+      setLock(false);
     }
   }
 
@@ -96,23 +151,24 @@ const MainInput = () => {
       setLockedInput(currInput);
       setComparedInput('');
     }
-
     // console.log(lockInput);
   }
 
   const timeInput = () => {
     setTimed(!timed);
+    // console.log(timed, lock)
+    setLockedInput(currInput);
+    setComparedInput('');
     setLock(true);
 
-    if (!lock) {
-      setLockedInput(currInput);
-      setComparedInput('');
-    }
+    lock ? null : setLock(true)
   }
 
   const settingInput = () => {
     setSettings(!settings)
   }
+
+  // console.log(currInput.length);
 
   return (
     <div className={mainInputStyles.textarea_container}>
@@ -122,13 +178,44 @@ const MainInput = () => {
           ? <Stopwatch
             nowTiming={nowTiming}
             resetTiming={resetTiming}
+            lockedInput={lockedInput}
+            setLockedInput={setLockedInput}
           />
           : null
         }
         {
           currInput.length === 0
-            ? null
+            ? <div className={mainInputStyles.icon_set}>
+              <FontAwesomeIcon
+                className={
+                  mainInputStyles.clipboard
+                }
+                icon={faClipboard}
+                onClick={() => exampleCode()}
+                data-tip="Example code."
+                data-for="clipboard_tool"
+              />
+
+              <FontAwesomeIcon
+                className={
+                  // settings 
+                  // ? mainInputStyles.settingIcon 
+                  // : mainInputStyles.cogIcon
+                  mainInputStyles.cogIcon
+                }
+                icon={faGear}
+                onClick={() => settingInput()}
+              />
+            </div>
             : <div className={mainInputStyles.icon_set}>
+              <FontAwesomeIcon
+                className={
+                  mainInputStyles.save
+                }
+                icon={faFloppyDisk}
+                onClick={() => saveCode()}
+              />
+
               <FontAwesomeIcon
                 className={
                   mainInputStyles.clipboard
@@ -221,6 +308,7 @@ const MainInput = () => {
           />
           : null}
       </div>
+      <SideBar storedInputs={storedInputs} setStoredInputs={setStoredInputs} setCurrInput={setCurrInput} currInput={currInput} />
     </div>
   )
 }
