@@ -11,6 +11,7 @@ import mainInputStyles from '../../styles/MainInput.module.css';
 import '../SideBar/index';
 import SideBar from '../SideBar/index';
 import Stopwatch from '../StopWatch/index';
+import TimePanel from '../TimePanel';
 
 const MainInput = () => {
   const [currInput, setCurrInput] = useState<string>("")
@@ -19,18 +20,17 @@ const MainInput = () => {
   const [lock, setLock] = useState<boolean>(false);
   const [timed, setTimed] = useState<boolean>(false);
   const [settings, setSettings] = useState<boolean>(false);
+
   const [currLanguage, setCurrLanguage] = useState<string>("python");
   const [correctChar, setCorrectChar] = useState<boolean>(true);
 
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
-  // const [storedInputs, setStoredInputs] = useState<any>(() => {
-  //   const localData = localStorage.getItem('snippets');
-  //   return localData ? JSON.parse(localData) : [];
-  // })
-
   const [storedInputs, setStoredInputs] = useState<any>([])
+  const [storedTimes, setStoredTimes] = useState<any>({})
+
+  const [transparentSlider, setTransparentSlider] = useState<number>(25)
 
   useEffect(() => {
     const data: any = localStorage.getItem("snippets")
@@ -40,20 +40,9 @@ const MainInput = () => {
     }
   }, [])
 
-  const saveCode = () => {
-    setStoredInputs((prevState: any) => [...prevState, currInput])
-  }
-
   useEffect(() => {
     localStorage.setItem('snippets', JSON.stringify(storedInputs))
   }, [storedInputs])
-
-  // useEffect(() => {
-  //   const localData = localStorage.getItem('snippets');
-  //   setStoredInputs(localData ? JSON.parse(localData) : [])
-  // }, [])
-
-  // const [storedInputs, setStoredInputs] = useLocalStorage("snippets")
 
   useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
@@ -62,9 +51,22 @@ const MainInput = () => {
     }
   }, [lock])
 
-  const compareArrs = (a: Array<string>, b: Array<string>) => {
-    return a.every((char, idx) => char === b[idx])
-  }
+  useEffect(() => {
+    if (lockedInput.length === comparedInput.length) {
+      if (lockedInput !== comparedInput) {
+        setNowTiming(true)
+      }
+    }
+  }, [lockedInput, comparedInput])
+
+  useEffect(() => {
+    const transparency = document.querySelector<HTMLElement>(`.${mainInputStyles.opacity_change}`);
+    if (transparency) {
+      transparency.style.opacity = `${transparentSlider}%`;
+    }
+  }, [transparentSlider])
+
+  console.log(transparentSlider)
 
   const setCorrect = (original: string[], compared: string[]) => {
     if (compareArrs(original, compared)) {
@@ -74,44 +76,44 @@ const MainInput = () => {
     }
   }
 
-  useEffect(() => {
-    if (lockedInput.length === comparedInput.length) {
-      if (lockedInput !== comparedInput) {
-        setNowTiming(true)
-      }
-    }  
-  }, [lockedInput, comparedInput])
+  const saveCode = () => {
+    setStoredInputs((prevState: any) => [...prevState, currInput])
+  }
 
+  const compareArrs = (a: Array<string>, b: Array<string>) => {
+    return a.every((char, idx) => char === b[idx])
+  }
+
+  const grabDate = () => {
+    const newDate = new Date().toLocaleDateString('en-us',
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      })
+    console.log(newDate)
+  }
 
   const compareCode = (code: string) => {
     setComparedInput(code);
     let lockedInputValue = lockedInput.split('')
     let comparedInputValue = code.split('')
-    // console.log("lockedLength: ", lockedInputValue.length)
 
     let comparedInputIndex = comparedInputValue.length - 1
     let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
-    // console.log(comparedInputValue)
-    // console.log(comparedInputIndex)
-    // console.log("slicedLockLength: ", slicedLocked.length)
-    // console.log(correctChar);
 
     if (lock && timed) {
       setResetTiming(false);
 
       if (slicedLocked.length > 0) {
         setNowTiming(true)
-        // console.log(lockedInput === comparedInput)
 
         if (
           slicedLocked.length === lockedInputValue.length
           && correctChar
         ) {
-          // console.log(comparedInput)
-          // console.log(lockedInput)
           setNowTiming(false)
-          // console.log(correctChar);
-          // console.log(getTime)
         }
       }
 
@@ -119,11 +121,6 @@ const MainInput = () => {
         setResetTiming(true);
       }
     }
-    // if (compareArrs(slicedLocked, comparedInputValue)) {
-    //   setCorrectChar((prev) => prev = true)
-    // } else {
-    //   setCorrectChar((prev) => prev = false);
-    // }
 
     setCorrect(slicedLocked, comparedInputValue);
   }
@@ -172,8 +169,6 @@ const MainInput = () => {
     setSettings(!settings)
   }
 
-  // console.log(currInput.length);
-
   return (
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
@@ -202,10 +197,9 @@ const MainInput = () => {
 
               <FontAwesomeIcon
                 className={
-                  // settings 
-                  // ? mainInputStyles.settingIcon 
-                  // : mainInputStyles.cogIcon
-                  mainInputStyles.cogIcon
+                  settings
+                    ? mainInputStyles.settingIcon
+                    : mainInputStyles.cogIcon
                 }
                 icon={faGear}
                 onClick={() => settingInput()}
@@ -213,12 +207,31 @@ const MainInput = () => {
             </div>
             : <div className={mainInputStyles.icon_set}>
               <FontAwesomeIcon
+                className={lock
+                  ? mainInputStyles.lockIcon
+                  : mainInputStyles.unlockIcon}
+                icon={lock ? faLock : faUnlock}
+                onClick={() => lockInput()}
+              />
+
+
+              <FontAwesomeIcon
+                icon={faClock}
+                className={timed
+                  ? mainInputStyles.timingIcon
+                  : mainInputStyles.timeIcon}
+                onClick={() => timeInput()}
+              />
+
+              <FontAwesomeIcon
                 className={
                   mainInputStyles.save
                 }
                 icon={faFloppyDisk}
                 onClick={() => saveCode()}
               />
+
+
 
               <FontAwesomeIcon
                 className={
@@ -232,27 +245,12 @@ const MainInput = () => {
 
               <FontAwesomeIcon
                 className={
-                  settings 
-                  ? mainInputStyles.settingIcon 
-                  : mainInputStyles.cogIcon
+                  settings
+                    ? mainInputStyles.settingIcon
+                    : mainInputStyles.cogIcon
                 }
                 icon={faGear}
                 onClick={() => settingInput()}
-              />
-
-              <FontAwesomeIcon
-                icon={faClock}
-                className={timed
-                  ? mainInputStyles.timingIcon
-                  : mainInputStyles.timeIcon}
-                onClick={() => timeInput()}
-              />
-              <FontAwesomeIcon
-                className={lock
-                  ? mainInputStyles.lockIcon
-                  : mainInputStyles.unlockIcon}
-                icon={lock ? faLock : faUnlock}
-                onClick={() => lockInput()}
               />
             </div>
         }
@@ -283,7 +281,7 @@ const MainInput = () => {
               fontSize: 16,
             }}
             textareaClassName={mainInputStyles.text_area_locked}
-            preClassName={mainInputStyles.pre_area_locked}
+            preClassName={`${mainInputStyles.pre_area_locked} ${mainInputStyles.opacity_change}`}
             textareaId={mainInputStyles.text_area_id_locked}
           />
           : null}
@@ -311,16 +309,24 @@ const MainInput = () => {
           />
           : null}
       </div>
-      {settings 
-      ? <SideBar
-        storedInputs={storedInputs}
-        setStoredInputs={setStoredInputs}
-        setCurrInput={setCurrInput}
-        currInput={currInput}
-        setTimed={setTimed}
-        setLock={setLock}
-      />
-      : null
+      {settings
+        ? <SideBar
+          storedInputs={storedInputs}
+          setStoredInputs={setStoredInputs}
+          setCurrInput={setCurrInput}
+          currInput={currInput}
+          setTimed={setTimed}
+          setLock={setLock}
+          transparentSlider={transparentSlider}
+          setTransparentSlider={setTransparentSlider}
+        />
+        : null
+      }
+      {settings
+        ? <TimePanel
+          storedTimes={storedTimes}
+        />
+        : null
       }
     </div>
   )
