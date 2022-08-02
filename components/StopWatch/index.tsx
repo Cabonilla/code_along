@@ -5,14 +5,13 @@ import Timer from "./Timer";
 const StopWatch = (props: any) => {
 	const [isActive, setIsActive] = useState(true);
 	const [isPaused, setIsPaused] = useState(true);
-	const [time, setTime] = useState(0);
 
 	React.useEffect(() => {
-		let interval:any = null;
+		let interval: any = null;
 
 		if (isActive && isPaused === false) {
 			interval = setInterval(() => {
-				setTime((time) => time + 10);
+				props.setTime((time: any) => time + 10);
 			}, 10);
 		} else {
 			clearInterval(interval);
@@ -20,9 +19,9 @@ const StopWatch = (props: any) => {
 		return () => {
 			clearInterval(interval);
 		};
-	}, [isActive, isPaused]);
+	}, [isActive, isPaused, props]);
 
-	
+
 	useEffect(() => {
 		if (props.nowTiming === true) {
 			handleStart()
@@ -31,9 +30,13 @@ const StopWatch = (props: any) => {
 		}
 
 		if (props.resetTiming === true) {
+			const handleReset = () => {
+				setIsActive(false);
+				props.setTime(0);
+			};
 			handleReset()
 		}
-	}, [props.nowTiming, props.resetTiming])
+	}, [props.nowTiming, props.resetTiming, props])
 
 	const handleStart = () => {
 		setIsActive(true);
@@ -44,18 +47,13 @@ const StopWatch = (props: any) => {
 		setIsPaused(!isPaused);
 	};
 
-	const handleReset = () => {
-		setIsActive(false);
-		setTime(0);
-	};
-
 	if (!props.lockedInput) {
 		props.setLockedInput(false);
 	}
 
 	return (
 		<div className={mainInputStyles.stopWatch}>
-			<Timer time={time} />
+			<Timer time={props.time} />
 		</div>
 	);
 }

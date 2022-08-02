@@ -19,6 +19,8 @@ const MainInput = () => {
   const [comparedInput, setComparedInput] = useState<string>("")
   const [lock, setLock] = useState<boolean>(false);
   const [timed, setTimed] = useState<boolean>(false);
+  const [time, setTime] = useState(0);
+  const [finalTime, setFinalTime] = useState<number>(0)
   const [settings, setSettings] = useState<boolean>(false);
 
   const [currLanguage, setCurrLanguage] = useState<string>("python");
@@ -31,6 +33,14 @@ const MainInput = () => {
   const [storedTimes, setStoredTimes] = useState<any>({})
 
   const [transparentSlider, setTransparentSlider] = useState<number>(25)
+
+  const newDate = new Date().toLocaleDateString('en-us',
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    })
 
   useEffect(() => {
     const data: any = localStorage.getItem("snippets")
@@ -45,11 +55,30 @@ const MainInput = () => {
   }, [storedInputs])
 
   useEffect(() => {
+    const data: any = localStorage.getItem("times")
+    // console.log("Stored Data: ", data);
+    if (data !== undefined) {
+      setStoredTimes(JSON.parse(data))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('times', JSON.stringify(storedTimes))
+  }, [finalTime])
+
+  // console.log(storedTimes);
+
+  useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
     if (placeholderText) {
       placeholderText.setAttribute("placeholder", "Enter your code here.")
     }
   }, [lock])
+
+  useEffect(() => {
+    let comparedText = document.querySelector(`.${mainInputStyles.text_area_compared}`)
+    comparedText?.setAttribute("maxlength", `${lockedInput.length}`)
+  }, [lockedInput])
 
   useEffect(() => {
     if (lockedInput.length === comparedInput.length) {
@@ -66,7 +95,7 @@ const MainInput = () => {
     }
   }, [transparentSlider])
 
-  console.log(transparentSlider)
+  // console.log(transparentSlider)
 
   const setCorrect = (original: string[], compared: string[]) => {
     if (compareArrs(original, compared)) {
@@ -77,23 +106,29 @@ const MainInput = () => {
   }
 
   const saveCode = () => {
-    setStoredInputs((prevState: any) => [...prevState, currInput])
+    if (storedInputs === null) {
+      setStoredInputs([currInput])
+    } else {
+      setStoredInputs([...storedInputs, currInput])
+    }
   }
 
   const compareArrs = (a: Array<string>, b: Array<string>) => {
     return a.every((char, idx) => char === b[idx])
   }
 
-  const grabDate = () => {
-    const newDate = new Date().toLocaleDateString('en-us',
-      {
-        weekday: "long",
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      })
-    console.log(newDate)
+  const handleTime = async () => {
+    let newTimeObj: any = {}
+
+    let newTime = newDate
+    let newVal: any = []
+
+    newTimeObj[newTime] = newVal
+    setStoredTimes({ ...storedTimes, ...newTimeObj })
   }
+
+  // console.log("StoredTimes[newDate]: ", storedTimes[newDate]);
+  // console.log("StoredTimes: ", storedTimes);
 
   const compareCode = (code: string) => {
     setComparedInput(code);
@@ -108,12 +143,20 @@ const MainInput = () => {
 
       if (slicedLocked.length > 0) {
         setNowTiming(true)
+        if (storedTimes === 1 || storedTimes === null || Object.keys.length === 0) {
+          handleTime();
+        }
 
         if (
           slicedLocked.length === lockedInputValue.length
           && correctChar
         ) {
           setNowTiming(false)
+
+          if (storedTimes[newDate]) {
+            storedTimes[newDate].push(time)
+            setFinalTime(time);
+          }
         }
       }
 
@@ -152,12 +195,10 @@ const MainInput = () => {
       setLockedInput(currInput);
       setComparedInput('');
     }
-    // console.log(lockInput);
   }
 
   const timeInput = () => {
     setTimed(!timed);
-    // console.log(timed, lock)
     setLockedInput(currInput);
     setComparedInput('');
     setLock(true);
@@ -169,6 +210,8 @@ const MainInput = () => {
     setSettings(!settings)
   }
 
+  console.log(storedTimes)
+
   return (
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
@@ -179,6 +222,8 @@ const MainInput = () => {
             resetTiming={resetTiming}
             lockedInput={lockedInput}
             setLockedInput={setLockedInput}
+            time={time}
+            setTime={setTime}
           />
           : null
         }
@@ -230,8 +275,6 @@ const MainInput = () => {
                 icon={faFloppyDisk}
                 onClick={() => saveCode()}
               />
-
-
 
               <FontAwesomeIcon
                 className={
@@ -325,6 +368,9 @@ const MainInput = () => {
       {settings
         ? <TimePanel
           storedTimes={storedTimes}
+          setStoredTimes={setStoredTimes}
+          newDate={newDate}
+          setFinalTime={setFinalTime}
         />
         : null
       }

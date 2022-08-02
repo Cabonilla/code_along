@@ -1,5 +1,4 @@
 const Timer = (props: any) => {
-	// console.log(props)
 
 	return (
 		<div className="timer">

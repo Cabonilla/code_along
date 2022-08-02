@@ -132,9 +132,9 @@
 }
 
 .snippet_box {
-	height: 40vh;
+	max-height: 40vh;
 	overflow-x: none;
-	overflow-y: scroll;
+	overflow-y: auto;
 	/* display: flex;
 	flex-direction: column;
 	gap: 1em; */
@@ -197,7 +197,19 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	margin: 1em;
-	height: 100%;
+	height: 100vh;
 	width: 30vw;
+	overflow-x: none;
+	overflow-y: auto;
+}
+
+.time_panel_header {
+	margin: 1em 0 .5em 1em;
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+
+.timing_list {
+	margin-left: 1em;
 }
