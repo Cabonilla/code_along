@@ -1,10 +1,11 @@
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import mainInputStyles from '../../styles/MainInput.module.css';
 
 const SideBar = (props: any) => {
 	const [currHover, setCurrHover] = useState<string>("")
+	const [snippetRemove, setSnippetRemove] = useState<boolean>(false)
 
 	const localReplace = async (selection: any) => {
 		props.setCurrInput(currHover);
@@ -24,27 +25,32 @@ const SideBar = (props: any) => {
 		}
 	}
 
+	const removeListing = (index: any) => {
+		props.setStoredInputs((props.storedInputs).filter((o: any, i: any) => index !== i))
+	}
+
 	return (
 		<div className={mainInputStyles.sidebar}>
 			<div className={mainInputStyles.saved_snippets}>
 				<div className={mainInputStyles.sidebar_header}>
 					<p>Saved Snippets</p>
-					<FontAwesomeIcon style={{'width': '.75em'}} onClick={() => clearLocal()} icon={faTrash}></FontAwesomeIcon>
+					<FontAwesomeIcon style={{ 'width': '.75em' }} onClick={() => clearLocal()} icon={faTrash}></FontAwesomeIcon>
 				</div>
 				<div className={mainInputStyles.snippet_box}>
 					{Object.keys(props.storedInputs || {}).map((key: string, idx: number) => {
 						return (
-							<div key={idx}>
+							<div key={idx} className={mainInputStyles.snippet_listing}>
 								<pre
-									key={key}
 									className={mainInputStyles.saved_snippet}
 									onClick={(e) => localReplace(e)}
 									onMouseEnter={(e) => hoverSelection(e)}
 								>
-									<code key={key}>
+									<code
+									>
 										{props.storedInputs[key]}
 									</code>
 								</pre>
+								<FontAwesomeIcon icon={faXmark} className={mainInputStyles.snippet_delete} onClick={() => removeListing(idx)} />
 							</div>
 						)
 					})}
@@ -60,7 +66,7 @@ const SideBar = (props: any) => {
 					max="100"
 					defaultValue="25"
 					onChange={(e) => props.setTransparentSlider(Number(e.target.value))}
-					step="5"
+					step="25"
 				>
 				</input>
 			</div>

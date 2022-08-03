@@ -15,7 +15,7 @@ const TimePanel = (props: any) => {
 		<div className={mainInputStyles.time_panel}>
 			<div className={mainInputStyles.time_panel_header}>
 				<p>Saved Times</p>
-				<FontAwesomeIcon style={{ 'width': '.75em' }} onClick={() => clearTimes()} icon={faTrash}></FontAwesomeIcon>
+				<FontAwesomeIcon className={mainInputStyles.trash_icon} style={{ 'width': '.75em' }} onClick={() => clearTimes()} icon={faTrash}></FontAwesomeIcon>
 			</div>
 			<>
 				{props.storedTimes ? Object.entries(props.storedTimes).map(([key, val], i) => (

@@ -1,4 +1,4 @@
-import { faClipboard, faClock, faFloppyDisk, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -8,6 +8,8 @@ import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import mainInputStyles from '../../styles/MainInput.module.css';
+import HelpModal from '../HelpModal/index';
+import SettingBar from '../SettingBar';
 import '../SideBar/index';
 import SideBar from '../SideBar/index';
 import Stopwatch from '../StopWatch/index';
@@ -17,11 +19,12 @@ const MainInput = () => {
   const [currInput, setCurrInput] = useState<string>("")
   const [lockedInput, setLockedInput] = useState<string>("");
   const [comparedInput, setComparedInput] = useState<string>("")
-  const [lock, setLock] = useState<boolean>(false);
-  const [timed, setTimed] = useState<boolean>(false);
   const [time, setTime] = useState(0);
   const [finalTime, setFinalTime] = useState<number>(0)
+  const [lock, setLock] = useState<boolean>(false);
+  const [timed, setTimed] = useState<boolean>(false);
   const [settings, setSettings] = useState<boolean>(false);
+  const [help, setHelp] = useState<boolean>(false);
 
   const [currLanguage, setCurrLanguage] = useState<string>("python");
   const [correctChar, setCorrectChar] = useState<boolean>(true);
@@ -43,6 +46,10 @@ const MainInput = () => {
     })
 
   useEffect(() => {
+    localStorage.setItem('snippets', JSON.stringify(storedInputs))
+  }, [storedInputs])
+
+  useEffect(() => {
     const data: any = localStorage.getItem("snippets")
     // console.log("Stored Data: ", data);
     if (data !== undefined) {
@@ -51,8 +58,9 @@ const MainInput = () => {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('snippets', JSON.stringify(storedInputs))
-  }, [storedInputs])
+    localStorage.setItem('times', JSON.stringify(storedTimes))
+  }, [finalTime])
+
 
   useEffect(() => {
     const data: any = localStorage.getItem("times")
@@ -61,10 +69,6 @@ const MainInput = () => {
       setStoredTimes(JSON.parse(data))
     }
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem('times', JSON.stringify(storedTimes))
-  }, [finalTime])
 
   // console.log(storedTimes);
 
@@ -105,14 +109,6 @@ const MainInput = () => {
     }
   }
 
-  const saveCode = () => {
-    if (storedInputs === null) {
-      setStoredInputs([currInput])
-    } else {
-      setStoredInputs([...storedInputs, currInput])
-    }
-  }
-
   const compareArrs = (a: Array<string>, b: Array<string>) => {
     return a.every((char, idx) => char === b[idx])
   }
@@ -130,6 +126,8 @@ const MainInput = () => {
   // console.log("StoredTimes[newDate]: ", storedTimes[newDate]);
   // console.log("StoredTimes: ", storedTimes);
 
+  // console.log(Object.keys(storedTimes).length)
+
   const compareCode = (code: string) => {
     setComparedInput(code);
     let lockedInputValue = lockedInput.split('')
@@ -143,7 +141,7 @@ const MainInput = () => {
 
       if (slicedLocked.length > 0) {
         setNowTiming(true)
-        if (storedTimes === 1 || storedTimes === null || Object.keys.length === 0) {
+        if (storedTimes === 1 || storedTimes === null || Object.keys(storedTimes).length === 0) {
           handleTime();
         }
 
@@ -168,49 +166,7 @@ const MainInput = () => {
     setCorrect(slicedLocked, comparedInputValue);
   }
 
-  const exampleCode = () => {
-    if (!lock) {
-      setCurrInput((prev) => prev =
-        `def binary_search(lst, target):
-    start = 0
-    end = len(lst) - 1
-    while(start <= end):
-        mid = (start + end) // 2
-        if(lst[mid] > target):
-            end = mid - 1
-        elif(lst[mid] < target):
-            start = mid + 1
-        else:
-            return mid
-    return None`)
-      setLock(false);
-    }
-  }
-
-  const lockInput = () => {
-
-    setLock(!lock);
-
-    if (!lock) {
-      setLockedInput(currInput);
-      setComparedInput('');
-    }
-  }
-
-  const timeInput = () => {
-    setTimed(!timed);
-    setLockedInput(currInput);
-    setComparedInput('');
-    setLock(true);
-
-    lock ? null : setLock(true)
-  }
-
-  const settingInput = () => {
-    setSettings(!settings)
-  }
-
-  console.log(storedTimes)
+  // console.log(storedTimes)
 
   return (
     <div className={mainInputStyles.textarea_container}>
@@ -227,76 +183,21 @@ const MainInput = () => {
           />
           : null
         }
-        {
-          currInput.length === 0
-            ? <div className={mainInputStyles.icon_set}>
-              <FontAwesomeIcon
-                className={
-                  mainInputStyles.clipboard
-                }
-                icon={faClipboard}
-                onClick={() => exampleCode()}
-                data-tip="Example code."
-                data-for="clipboard_tool"
-              />
-
-              <FontAwesomeIcon
-                className={
-                  settings
-                    ? mainInputStyles.settingIcon
-                    : mainInputStyles.cogIcon
-                }
-                icon={faGear}
-                onClick={() => settingInput()}
-              />
-            </div>
-            : <div className={mainInputStyles.icon_set}>
-              <FontAwesomeIcon
-                className={lock
-                  ? mainInputStyles.lockIcon
-                  : mainInputStyles.unlockIcon}
-                icon={lock ? faLock : faUnlock}
-                onClick={() => lockInput()}
-              />
-
-
-              <FontAwesomeIcon
-                icon={faClock}
-                className={timed
-                  ? mainInputStyles.timingIcon
-                  : mainInputStyles.timeIcon}
-                onClick={() => timeInput()}
-              />
-
-              <FontAwesomeIcon
-                className={
-                  mainInputStyles.save
-                }
-                icon={faFloppyDisk}
-                onClick={() => saveCode()}
-              />
-
-              <FontAwesomeIcon
-                className={
-                  mainInputStyles.clipboard
-                }
-                icon={faClipboard}
-                onClick={() => exampleCode()}
-                data-tip="Example code."
-                data-for="clipboard_tool"
-              />
-
-              <FontAwesomeIcon
-                className={
-                  settings
-                    ? mainInputStyles.settingIcon
-                    : mainInputStyles.cogIcon
-                }
-                icon={faGear}
-                onClick={() => settingInput()}
-              />
-            </div>
-        }
+        <SettingBar
+          currInput={currInput}
+          storedInputs={storedInputs}
+          setStoredInputs={setStoredInputs}
+          timed={timed}
+          setTime={setTime}
+          lock={lock}
+          setLock={setLock}
+          setComparedInput={setComparedInput}
+          setTimed={setTimed}
+          setSettings={setSettings}
+          settings={settings}
+          setLockedInput={setLockedInput}
+          setCurrInput={setCurrInput}
+        />
         {!lock ? <Editor
           value={currInput}
           onValueChange={code => setCurrInput(code)}
@@ -374,6 +275,13 @@ const MainInput = () => {
         />
         : null
       }
+      {help ? <HelpModal
+        help={help}
+        setHelp={setHelp}
+      /> : null}
+      <div className={mainInputStyles.help_button} onClick={() => setHelp(!help)}>
+        <FontAwesomeIcon icon={faQuestion} className={mainInputStyles.question_mark}></FontAwesomeIcon>
+      </div>
     </div>
   )
 }

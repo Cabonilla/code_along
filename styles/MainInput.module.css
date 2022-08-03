@@ -139,9 +139,24 @@
 	flex-direction: column;
 	gap: 1em; */
 }
-
 .saved_snippets>p {
 	font-family: monospace;
+}
+
+.snippet_listing {
+	position: relative;
+}
+
+.snippet_delete {
+	position: absolute;
+	bottom: .5em;
+	right: 1.5em;
+	/* background-color: red; */
+	width: .75em;
+	height: auto;
+	z-index: 100;
+	color: black;
+	cursor: pointer;
 }
 
 .saved_snippet {
@@ -152,12 +167,13 @@
 	margin: 0 1em 1em 0;
 	font-size: .75em;
 	overflow: hidden;
+	position: relative;
 }
 
 .saved_snippet:hover {
 	background-color: rgba(0, 0, 0, 0.05);
 	color: rgba(0, 0, 0, 0.25);
-}
+} 
 
 .sidebar_header {
 	display: flex;
@@ -212,4 +228,104 @@
 
 .timing_list {
 	margin-left: 1em;
+}
+
+.modal_container {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+}
+
+.modal_background {
+	background-color: rgba(0,0,0,0.30);
+	width: 100%3;
+	height: 100%;
+}
+
+.question_mark {
+	width: .75em;
+	height: auto;
+	color: lightgrey;
+}
+
+.modal {
+	width: 25vw;
+	height: 75vh;
+	background-color: white;
+	position: absolute;
+	left: 0;
+	right: 2em;
+	top: 0;
+	bottom: 4em;
+	z-index: 999;
+
+	margin-left: auto;
+	margin-top: auto;
+	/* margin-bottom: auto; */
+	/* margin-right: auto; */
+
+	border-radius: 25px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.04), 
+	0 2px 4px rgba(0,0,0,0.04), 
+	0 4px 8px rgba(0,0,0,0.04), 
+	0 8px 16px rgba(0,0,0,0.04),
+	0 16px 32px rgba(0,0,0,0.04), 
+	0 32px 64px rgba(0,0,0,0.04);
+
+	display: flex;
+	align-items: center;
+
+	flex-direction: column;
+}
+
+.modal_listing {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin: .5em;
+}
+
+.help_listing_title {
+	margin-left: 1.5em;
+}
+
+.help_listing_icon {
+	margin-right: 1.5em;
+}
+
+.help_header {
+	font-size: 2em;
+	margin: .5em 0 .5em 0;
+}
+
+.help_button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 2.5em;
+	height: 2.5em;
+	background-color: rgba(0,0,0,0.05);
+	border-radius: 50%;
+
+	position: absolute;
+	bottom: 1em;
+	right: 1em;	
+	cursor: pointer;
+}
+
+.help_button:hover {
+	background-color: rgba(0,0,0,0.1);
+}
+
+.help_button:hover>* {
+	color: black;
+}
+
+.trash_icon {
+	color: lightgray;
+}
+
+.trash_icon:hover {
+	color: black;
 }
