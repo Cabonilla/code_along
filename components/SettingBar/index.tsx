@@ -15,17 +15,17 @@ const SettingBar = (props: any) => {
 		if (!props.lock) {
 			props.setCurrInput((prev: any) => prev =
 				`def binary_search(lst, target):
-		start = 0
-		end = len(lst) - 1
-		while(start <= end):
-			mid = (start + end) // 2
-			if(lst[mid] > target):
-				end = mid - 1
-			elif(lst[mid] < target):
-				start = mid + 1
-			else:
-				return mid
-		return None`)
+	start = 0
+	end = len(lst) - 1
+	while(start <= end):
+		mid = (start + end) // 2
+		if(lst[mid] > target):
+			end = mid - 1
+		elif(lst[mid] < target):
+			start = mid + 1
+		else:
+			return mid
+	return None`)
 			props.setLock(false);
 		}
 	}
@@ -65,6 +65,7 @@ const SettingBar = (props: any) => {
 							onClick={() => exampleCode()}
 							data-tip="Example code."
 							data-for="clipboard_tool"
+							title="Paste Example"
 						/>
 
 						<FontAwesomeIcon
@@ -75,6 +76,7 @@ const SettingBar = (props: any) => {
 							}
 							icon={faGear}
 							onClick={() => settingInput()}
+							title="Open Settings"
 						/>
 					</div>
 					: <div className={mainInputStyles.icon_set}>
@@ -84,6 +86,7 @@ const SettingBar = (props: any) => {
 								: mainInputStyles.unlockIcon}
 							icon={props.lock ? faLock : faUnlock}
 							onClick={() => lockInput()}
+							title="Lock Input"
 						/>
 
 
@@ -93,6 +96,7 @@ const SettingBar = (props: any) => {
 								? mainInputStyles.timingIcon
 								: mainInputStyles.timeIcon}
 							onClick={() => timeInput()}
+							title="Enable Timer"
 						/>
 
 						<FontAwesomeIcon
@@ -101,6 +105,7 @@ const SettingBar = (props: any) => {
 							}
 							icon={faFloppyDisk}
 							onClick={() => saveCode()}
+							title="Save Snippet"
 						/>
 
 						<FontAwesomeIcon
@@ -111,6 +116,7 @@ const SettingBar = (props: any) => {
 							onClick={() => exampleCode()}
 							data-tip="Example code."
 							data-for="clipboard_tool"
+							title="Paste Example"
 						/>
 
 						<FontAwesomeIcon
@@ -121,6 +127,7 @@ const SettingBar = (props: any) => {
 							}
 							icon={faGear}
 							onClick={() => settingInput()}
+							title="Close Settings"
 						/>
 					</div>
 			}

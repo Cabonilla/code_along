@@ -7,6 +7,7 @@ import 'prismjs/components/prism-python';
 import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
+import useLocalStorageState from 'use-local-storage-state';
 import mainInputStyles from '../../styles/MainInput.module.css';
 import HelpModal from '../HelpModal/index';
 import SettingBar from '../SettingBar';
@@ -32,8 +33,13 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
-  const [storedInputs, setStoredInputs] = useState<any>([])
-  const [storedTimes, setStoredTimes] = useState<any>({})
+  const [storedInputs, setStoredInputs] = useLocalStorageState('snippets', {
+    defaultValue: []
+  })
+
+  const [storedTimes, setStoredTimes] = useLocalStorageState('times', {
+    defaultValue: {}
+})
 
   const [transparentSlider, setTransparentSlider] = useState<number>(25)
 
@@ -45,30 +51,30 @@ const MainInput = () => {
       day: "numeric"
     })
 
-  useEffect(() => {
-    localStorage.setItem('snippets', JSON.stringify(storedInputs))
-  }, [storedInputs])
+  // useEffect(() => {
+  //   localStorage.setItem('snippets', JSON.stringify(storedInputs))
+  // }, [storedInputs])
 
-  useEffect(() => {
-    const data: any = localStorage.getItem("snippets")
-    // console.log("Stored Data: ", data);
-    if (data !== undefined) {
-      setStoredInputs(JSON.parse(data))
-    }
-  }, [])
+  // useEffect(() => {
+  //   const data: any = localStorage.getItem("snippets")
+  //   console.log("Stored Snippets: ", data);
+  //   if (data !== undefined) {
+  //     setStoredInputs(JSON.parse(data))
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    localStorage.setItem('times', JSON.stringify(storedTimes))
-  }, [finalTime])
+  // useEffect(() => {
+  //   localStorage.setItem('times', JSON.stringify(storedTimes))
+  // }, [finalTime])
 
 
-  useEffect(() => {
-    const data: any = localStorage.getItem("times")
-    // console.log("Stored Data: ", data);
-    if (data !== undefined) {
-      setStoredTimes(JSON.parse(data))
-    }
-  }, [])
+  // useEffect(() => {
+  //   const data: any = localStorage.getItem("times")
+  //   console.log("Stored Times: ", data);
+  //   if (data !== undefined) {
+  //     setStoredTimes(JSON.parse(data))
+  //   }
+  // }, [])
 
   // console.log(storedTimes);
 
@@ -119,7 +125,7 @@ const MainInput = () => {
     let newTime = newDate
     let newVal: any = []
 
-    newTimeObj[newTime] = newVal
+    newTimeObj[`${newTime}`] = newVal
     setStoredTimes({ ...storedTimes, ...newTimeObj })
   }
 
@@ -151,9 +157,11 @@ const MainInput = () => {
         ) {
           setNowTiming(false)
 
-          if (storedTimes[newDate]) {
-            storedTimes[newDate].push(time)
+          if ((storedTimes as any)[newDate]) {
+            (storedTimes as any)[newDate].push(time)
+            setStoredTimes(storedTimes)
             setFinalTime(time);
+            console.log("Hello.")
           }
         }
       }

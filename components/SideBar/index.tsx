@@ -34,12 +34,12 @@ const SideBar = (props: any) => {
 			<div className={mainInputStyles.saved_snippets}>
 				<div className={mainInputStyles.sidebar_header}>
 					<p>Saved Snippets</p>
-					<FontAwesomeIcon style={{ 'width': '.75em' }} onClick={() => clearLocal()} icon={faTrash}></FontAwesomeIcon>
+					<FontAwesomeIcon style={{ 'width': '.75em' }} onClick={() => clearLocal()} title="Clear Listings" icon={faTrash}></FontAwesomeIcon>
 				</div>
 				<div className={mainInputStyles.snippet_box}>
 					{Object.keys(props.storedInputs || {}).map((key: string, idx: number) => {
 						return (
-							<div key={idx} className={mainInputStyles.snippet_listing}>
+							<div key={idx} className={mainInputStyles.snippet_listing} title="Paste Listing">
 								<pre
 									className={mainInputStyles.saved_snippet}
 									onClick={(e) => localReplace(e)}
@@ -50,7 +50,7 @@ const SideBar = (props: any) => {
 										{props.storedInputs[key]}
 									</code>
 								</pre>
-								<FontAwesomeIcon icon={faXmark} className={mainInputStyles.snippet_delete} onClick={() => removeListing(idx)} />
+								<FontAwesomeIcon icon={faXmark} title="Remove Listing" className={mainInputStyles.snippet_delete} onClick={() => removeListing(idx)} />
 							</div>
 						)
 					})}

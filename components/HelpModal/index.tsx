@@ -67,10 +67,8 @@ const HelpModal = (props: any) => {
 						})
 					}
 				</>
-
 			</div>
 			<div className={mainInputStyles.modal_background} onClick={() => exitHelp()}>
-
 			</div>
 		</div>
 	)
