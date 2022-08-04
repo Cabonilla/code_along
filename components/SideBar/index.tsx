@@ -5,7 +5,6 @@ import mainInputStyles from '../../styles/MainInput.module.css';
 
 const SideBar = (props: any) => {
 	const [currHover, setCurrHover] = useState<string>("")
-	const [snippetRemove, setSnippetRemove] = useState<boolean>(false)
 
 	const localReplace = async (selection: any) => {
 		props.setCurrInput(currHover);

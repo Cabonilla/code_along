@@ -10,6 +10,7 @@ import Editor from 'react-simple-code-editor';
 import useLocalStorageState from 'use-local-storage-state';
 import mainInputStyles from '../../styles/MainInput.module.css';
 import HelpModal from '../HelpModal/index';
+import LineNumbers from '../LineNumbers';
 import SettingBar from '../SettingBar';
 import '../SideBar/index';
 import SideBar from '../SideBar/index';
@@ -33,6 +34,9 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
+  console.log(currInput)
+  console.log(comparedInput)
+
   const [storedInputs, setStoredInputs] = useLocalStorageState('snippets', {
     defaultValue: []
   })
@@ -50,33 +54,6 @@ const MainInput = () => {
       month: "short",
       day: "numeric"
     })
-
-  // useEffect(() => {
-  //   localStorage.setItem('snippets', JSON.stringify(storedInputs))
-  // }, [storedInputs])
-
-  // useEffect(() => {
-  //   const data: any = localStorage.getItem("snippets")
-  //   console.log("Stored Snippets: ", data);
-  //   if (data !== undefined) {
-  //     setStoredInputs(JSON.parse(data))
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   localStorage.setItem('times', JSON.stringify(storedTimes))
-  // }, [finalTime])
-
-
-  // useEffect(() => {
-  //   const data: any = localStorage.getItem("times")
-  //   console.log("Stored Times: ", data);
-  //   if (data !== undefined) {
-  //     setStoredTimes(JSON.parse(data))
-  //   }
-  // }, [])
-
-  // console.log(storedTimes);
 
   useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
@@ -180,6 +157,10 @@ const MainInput = () => {
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
       <div className={mainInputStyles.textarea_box}>
+        <LineNumbers 
+          currInput={currInput}
+          currLanguage={currLanguage}
+        />
         {timed
           ? <Stopwatch
             nowTiming={nowTiming}

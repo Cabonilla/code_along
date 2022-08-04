@@ -287,6 +287,7 @@
 	display: flex;
 	justify-content: space-between;
 	margin: .5em;
+	align-items: center;
 }
 
 .help_listing_title {
@@ -338,4 +339,12 @@
 	display: flex;
 	gap: 1em;
 	align-items: center;
+}
+
+.line_numbers {
+	display: none !important;
+}
+
+.pre_line_numbers>* {
+	color: rgba(0,0,0,1) !important;
 }

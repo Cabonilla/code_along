@@ -1,8 +1,22 @@
 import { faClipboard, faClock, faFloppyDisk, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 import mainInputStyles from '../../styles/MainInput.module.css';
 
 const SettingBar = (props: any) => {
+	const [exampleSnippet, setExampleSnippet] = useState<string>(
+	`def reverseList(head):
+    prev = None
+    curr = head
+    
+    while curr:
+        nxt = curr.next
+        curr.next = prev
+        prev = curr
+        curr = nxt
+        
+    return prev`)
+
 	const saveCode = () => {
 		if (props.storedInputs === null) {
 			props.setStoredInputs([props.currInput])
@@ -13,19 +27,7 @@ const SettingBar = (props: any) => {
 
 	const exampleCode = () => {
 		if (!props.lock) {
-			props.setCurrInput((prev: any) => prev =
-				`def binary_search(lst, target):
-	start = 0
-	end = len(lst) - 1
-	while(start <= end):
-		mid = (start + end) // 2
-		if(lst[mid] > target):
-			end = mid - 1
-		elif(lst[mid] < target):
-			start = mid + 1
-		else:
-			return mid
-	return None`)
+			props.setCurrInput(exampleSnippet)
 			props.setLock(false);
 		}
 	}
@@ -51,6 +53,8 @@ const SettingBar = (props: any) => {
 	const settingInput = () => {
 		props.setSettings(!props.settings)
 	}
+
+	console.log(exampleSnippet)
 
 	return (
 		<>
