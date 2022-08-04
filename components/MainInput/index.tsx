@@ -1,9 +1,10 @@
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { highlight, languages } from 'prismjs';
-import 'prismjs/components/prism-clike';
+import { Grammar, highlight, languages } from 'prismjs';
+import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
@@ -34,8 +35,25 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
-  console.log(currInput)
-  console.log(comparedInput)
+  // console.log(currInput)
+  // console.log(comparedInput)
+
+  interface langType {
+    [key: string]: Grammar;
+  }
+
+  const langObj: langType = {
+    "python": languages.python,
+    "javascript": languages.javascript,
+    "css": languages.css,
+    "typescript": languages.typescript
+  }
+
+  let pickLanguage = (lang: string) => {
+    if (langObj[lang]) {
+      return langObj[lang]
+    }
+  }
 
   const [storedInputs, setStoredInputs] = useLocalStorageState('snippets', {
     defaultValue: []
@@ -43,7 +61,7 @@ const MainInput = () => {
 
   const [storedTimes, setStoredTimes] = useLocalStorageState('times', {
     defaultValue: {}
-})
+  })
 
   const [transparentSlider, setTransparentSlider] = useState<number>(25)
 
@@ -138,7 +156,7 @@ const MainInput = () => {
             (storedTimes as any)[newDate].push(time)
             setStoredTimes(storedTimes)
             setFinalTime(time);
-            console.log("Hello.")
+            // console.log("Hello.")
           }
         }
       }
@@ -157,7 +175,7 @@ const MainInput = () => {
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
       <div className={mainInputStyles.textarea_box}>
-        <LineNumbers 
+        <LineNumbers
           currInput={currInput}
           currLanguage={currLanguage}
         />
@@ -186,11 +204,13 @@ const MainInput = () => {
           settings={settings}
           setLockedInput={setLockedInput}
           setCurrInput={setCurrInput}
+          currLanguage={currLanguage}
         />
         {!lock ? <Editor
           value={currInput}
           onValueChange={code => setCurrInput(code)}
-          highlight={code => highlight(code, languages.python, currLanguage)}
+          // @ts-ignore
+          highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
           tabSize={4}
           padding={10}
           style={{
@@ -206,7 +226,8 @@ const MainInput = () => {
           <Editor
             value={lockedInput}
             onValueChange={code => setLockedInput(code)}
-            highlight={code => highlight(code, languages.python, currLanguage)}
+            // @ts-ignore
+            highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
             tabSize={4}
             padding={10}
             style={{
@@ -222,7 +243,8 @@ const MainInput = () => {
           <Editor
             value={comparedInput}
             onValueChange={code => compareCode(code)}
-            highlight={code => highlight(code, languages.python, currLanguage)}
+            // @ts-ignore
+            highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
             tabSize={4}
             padding={10}
             autoFocus={true}
@@ -252,6 +274,8 @@ const MainInput = () => {
           setLock={setLock}
           transparentSlider={transparentSlider}
           setTransparentSlider={setTransparentSlider}
+          setCurrLanguage={setCurrLanguage}
+          langObj={langObj}
         />
         : null
       }

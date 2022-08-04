@@ -28,6 +28,12 @@ const SideBar = (props: any) => {
 		props.setStoredInputs((props.storedInputs).filter((o: any, i: any) => index !== i))
 	}
 
+	const changeLang = (lang: string) => {
+		props.setCurrLanguage(lang);
+	}
+
+	console.log(props.langObj)
+
 	return (
 		<div className={mainInputStyles.sidebar}>
 			<div className={mainInputStyles.saved_snippets}>
@@ -56,18 +62,42 @@ const SideBar = (props: any) => {
 				</div>
 			</div>
 			<div className={mainInputStyles.slider_box}>
-				<label htmlFor="slider">Locked Opacity</label>
-				<input
-					className={mainInputStyles.slider}
-					id={mainInputStyles.slider}
-					type="range"
-					min="0"
-					max="100"
-					defaultValue="25"
-					onChange={(e) => props.setTransparentSlider(Number(e.target.value))}
-					step="25"
-				>
-				</input>
+				<div className={mainInputStyles.slider_css}>
+					<label htmlFor="slider">Locked Opacity</label>
+					<input
+						className={mainInputStyles.slider}
+						id={mainInputStyles.slider}
+						type="range"
+						min="0"
+						max="100"
+						defaultValue="25"
+						onChange={(e) => props.setTransparentSlider(Number(e.target.value))}
+						step="25"
+					>
+					</input>
+				</div>
+				<form className={mainInputStyles.dropdown_form}>
+					<label>Language </label>
+					<select onChange={(e) => changeLang(e.target.value)}>
+						<>
+							{
+								Object.keys(props.langObj).map((key: any, idx) =>
+								(<option key={idx} value={key}>
+									{key}
+								</option>)
+								)
+							}
+							{/* <option value="css"> css
+					</option>
+					<option value="python"> python
+					</option>
+					<option value="javascript"> javascript
+					</option>
+					<option value="typescript"> typescript
+					</option> */}
+						</>
+					</select>
+				</form>
 			</div>
 		</div>
 	)
