@@ -4,6 +4,7 @@ import { Grammar, highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
@@ -35,7 +36,11 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
-  // console.log(currInput)
+  // const [lockedGrayscale, setLockedGrayscale] = useState<boolean>(false);
+  const [lockedGrayscale, setLockedGrayscale] = useLocalStorageState('grayscale', {
+    defaultValue: false
+  })
+
   // console.log(comparedInput)
 
   interface langType {
@@ -46,7 +51,8 @@ const MainInput = () => {
     "python": languages.python,
     "javascript": languages.javascript,
     "css": languages.css,
-    "typescript": languages.typescript
+    "typescript": languages.typescript,
+    "sql": languages.sql
   }
 
   let pickLanguage = (lang: string) => {
@@ -104,13 +110,14 @@ const MainInput = () => {
 
   const setCorrect = (original: string[], compared: string[]) => {
     if (compareArrs(original, compared)) {
-      setCorrectChar((prev) => prev = true)
+      setCorrectChar(true)
     } else {
-      setCorrectChar((prev) => prev = false);
+      setCorrectChar(false);
     }
   }
 
   const compareArrs = (a: Array<string>, b: Array<string>) => {
+    // console.log(a, b)
     return a.every((char, idx) => char === b[idx])
   }
 
@@ -136,6 +143,8 @@ const MainInput = () => {
 
     let comparedInputIndex = comparedInputValue.length - 1
     let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
+
+    // console.log(slicedLocked)
 
     if (lock && timed) {
       setResetTiming(false);
@@ -166,7 +175,15 @@ const MainInput = () => {
       }
     }
 
-    setCorrect(slicedLocked, comparedInputValue);
+    console.log(lockedInput.substring(0, code.length).replace(/[\s]/g, ''))
+    console.log(code.replace(/[\s]/g, ''))
+
+    if (lockedInput.substring(0, code.length) === code) {
+      setCorrectChar(true);
+    } else {
+      setCorrectChar(false);
+    } 
+    // setCorrect(slicedLocked, comparedInputValue);
   }
 
   // console.log(storedTimes)
@@ -235,7 +252,7 @@ const MainInput = () => {
               fontSize: 16,
             }}
             textareaClassName={mainInputStyles.text_area_locked}
-            preClassName={`${mainInputStyles.pre_area_locked} ${mainInputStyles.opacity_change}`}
+            preClassName={`${lockedGrayscale ? mainInputStyles.pre_area_locked : null} ${mainInputStyles.opacity_change}`}
             textareaId={mainInputStyles.text_area_id_locked}
           />
           : null}
@@ -276,6 +293,8 @@ const MainInput = () => {
           setTransparentSlider={setTransparentSlider}
           setCurrLanguage={setCurrLanguage}
           langObj={langObj}
+          lockedGrayscale={lockedGrayscale}
+          setLockedGrayscale={setLockedGrayscale}
         />
         : null
       }

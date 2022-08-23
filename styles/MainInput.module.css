@@ -380,3 +380,13 @@
 	font-size: .75em;
 }
 
+.checkbox_gray {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.checkbox_gray > label {
+	font-size: .75em;
+}

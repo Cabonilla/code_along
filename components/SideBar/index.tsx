@@ -32,7 +32,7 @@ const SideBar = (props: any) => {
 		props.setCurrLanguage(lang);
 	}
 
-	console.log(props.langObj)
+	// console.log(props.langObj)
 
 	return (
 		<div className={mainInputStyles.sidebar}>
@@ -69,10 +69,10 @@ const SideBar = (props: any) => {
 						id={mainInputStyles.slider}
 						type="range"
 						min="0"
-						max="100"
+						max="50"
 						defaultValue="25"
 						onChange={(e) => props.setTransparentSlider(Number(e.target.value))}
-						step="25"
+						step="5"
 					>
 					</input>
 				</div>
@@ -98,6 +98,11 @@ const SideBar = (props: any) => {
 						</>
 					</select>
 				</form>
+				<div className={mainInputStyles.checkbox_gray}>
+					<label htmlFor="checkbox">Locked Grayscale</label>
+					<input checked={props.lockedGrayscale ? true : false} type="checkbox" name="checkbox" onChange={() => props.setLockedGrayscale(!props.lockedGrayscale)}></input>
+				</div>
+
 			</div>
 		</div>
 	)

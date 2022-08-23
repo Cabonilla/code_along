@@ -1,4 +1,4 @@
-import { faClipboard, faClock, faFloppyDisk, faGear, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faClock, faFloppyDisk, faGear, faLock, faScissors, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import mainInputStyles from '../../styles/MainInput.module.css';
@@ -31,6 +31,13 @@ const SettingBar = (props: any) => {
 			props.setLock(false);
 		}
 	}
+	
+	const trimCode = () => {
+		if (!props.lock) {
+			props.setCurrInput((props.currInput).replace(/[^\S\r\n]+$/gm, ''))
+		}
+		console.log(props.currInput[0])
+	}
 
 	const lockInput = () => {
 		props.setLock(!props.lock);
@@ -54,7 +61,7 @@ const SettingBar = (props: any) => {
 		props.setSettings(!props.settings)
 	}
 
-	console.log(exampleSnippet)
+	// console.log(exampleSnippet)
 
 	return (
 		<>
@@ -116,11 +123,9 @@ const SettingBar = (props: any) => {
 							className={
 								mainInputStyles.clipboard
 							}
-							icon={faClipboard}
-							onClick={() => exampleCode()}
-							data-tip="Example code."
-							data-for="clipboard_tool"
-							title="Paste Example"
+							icon={faScissors}
+							onClick={() => trimCode()}
+							title="Trim Right-Most Spaces"
 						/>
 
 						<FontAwesomeIcon
