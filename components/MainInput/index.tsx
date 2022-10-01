@@ -29,6 +29,7 @@ const MainInput = () => {
   const [timed, setTimed] = useState<boolean>(false);
   const [settings, setSettings] = useState<boolean>(false);
   const [help, setHelp] = useState<boolean>(false);
+  const [fontSize, setFontSize] = useState<number>(14);
 
   const [currLanguage, setCurrLanguage] = useState<string>("python");
   const [correctChar, setCorrectChar] = useState<boolean>(true);
@@ -36,30 +37,9 @@ const MainInput = () => {
   const [nowTiming, setNowTiming] = useState<boolean>(false);
   const [resetTiming, setResetTiming] = useState<boolean>(false);
 
-  // const [lockedGrayscale, setLockedGrayscale] = useState<boolean>(false);
   const [lockedGrayscale, setLockedGrayscale] = useLocalStorageState('grayscale', {
     defaultValue: false
   })
-
-  // console.log(comparedInput)
-
-  interface langType {
-    [key: string]: Grammar;
-  }
-
-  const langObj: langType = {
-    "python": languages.python,
-    "javascript": languages.javascript,
-    "css": languages.css,
-    "typescript": languages.typescript,
-    "sql": languages.sql
-  }
-
-  let pickLanguage = (lang: string) => {
-    if (langObj[lang]) {
-      return langObj[lang]
-    }
-  }
 
   const [storedInputs, setStoredInputs] = useLocalStorageState('snippets', {
     defaultValue: []
@@ -70,6 +50,26 @@ const MainInput = () => {
   })
 
   const [transparentSlider, setTransparentSlider] = useState<number>(25)
+
+  console.log(storedTimes);
+
+  interface langType {
+    [key: string]: Grammar;
+  }
+
+  const langObj: langType = {
+    "python": languages.python,
+    "javascript": languages.javascript,
+    "css": languages.css,
+    "typescript": languages.typescript,
+    "sql": languages.sql,
+  }
+
+  let pickLanguage = (lang: string) => {
+    if (langObj[lang]) {
+      return langObj[lang]
+    }
+  }
 
   const newDate = new Date().toLocaleDateString('en-us',
     {
@@ -106,8 +106,6 @@ const MainInput = () => {
     }
   }, [transparentSlider])
 
-  // console.log(transparentSlider)
-
   const setCorrect = (original: string[], compared: string[]) => {
     if (compareArrs(original, compared)) {
       setCorrectChar(true)
@@ -131,20 +129,15 @@ const MainInput = () => {
     setStoredTimes({ ...storedTimes, ...newTimeObj })
   }
 
-  // console.log("StoredTimes[newDate]: ", storedTimes[newDate]);
-  // console.log("StoredTimes: ", storedTimes);
-
-  // console.log(Object.keys(storedTimes).length)
-
   const compareCode = (code: string) => {
     setComparedInput(code);
-    let lockedInputValue = lockedInput.split('')
-    let comparedInputValue = code.split('')
+    let lockedInputValue = lockedInput.replace(/[^\S\r\n]{4}/gi, "\t").split('')
+    let comparedInputValue = code.replace(/[^\S\r\n]{4}/gi, "\t").split('')
 
     let comparedInputIndex = comparedInputValue.length - 1
     let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
 
-    // console.log(slicedLocked)
+    const spaceSpan = [" ", " ", " ", " "]
 
     if (lock && timed) {
       setResetTiming(false);
@@ -165,7 +158,6 @@ const MainInput = () => {
             (storedTimes as any)[newDate].push(time)
             setStoredTimes(storedTimes)
             setFinalTime(time);
-            // console.log("Hello.")
           }
         }
       }
@@ -175,18 +167,18 @@ const MainInput = () => {
       }
     }
 
-    console.log(lockedInput.substring(0, code.length).replace(/[\s]/g, ''))
-    console.log(code.replace(/[\s]/g, ''))
-
-    if (lockedInput.substring(0, code.length) === code) {
+    if (JSON.stringify(lockedInputValue.slice(0, comparedInputValue.length)) == JSON.stringify(comparedInputValue)) {
       setCorrectChar(true);
     } else {
       setCorrectChar(false);
-    } 
-    // setCorrect(slicedLocked, comparedInputValue);
-  }
+    }
 
-  // console.log(storedTimes)
+    // let comparedText = document.querySelector(`.${mainInputStyles.text_area_compared}`)
+    
+    // if (comparedInputValue.length > 0) {
+    //   comparedText?.setAttribute('maxlength', `${lockedInputValue.length}`)
+    // }
+  }
 
   return (
     <div className={mainInputStyles.textarea_container}>
@@ -195,6 +187,8 @@ const MainInput = () => {
         <LineNumbers
           currInput={currInput}
           currLanguage={currLanguage}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
         />
         {timed
           ? <Stopwatch
@@ -222,17 +216,19 @@ const MainInput = () => {
           setLockedInput={setLockedInput}
           setCurrInput={setCurrInput}
           currLanguage={currLanguage}
+          setNowTiming={setNowTiming}
         />
         {!lock ? <Editor
           value={currInput}
           onValueChange={code => setCurrInput(code)}
           // @ts-ignore
           highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
-          tabSize={4}
+          tabSize={1}
           padding={10}
+          insertSpaces={false}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 16,
+            fontSize: fontSize,
           }}
           textareaClassName={mainInputStyles.text_area}
           preClassName={mainInputStyles.pre_area}
@@ -245,11 +241,12 @@ const MainInput = () => {
             onValueChange={code => setLockedInput(code)}
             // @ts-ignore
             highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
-            tabSize={4}
+            tabSize={1}
             padding={10}
+            insertSpaces={false}
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 16,
+              fontSize: fontSize,
             }}
             textareaClassName={mainInputStyles.text_area_locked}
             preClassName={`${lockedGrayscale ? mainInputStyles.pre_area_locked : null} ${mainInputStyles.opacity_change}`}
@@ -262,12 +259,13 @@ const MainInput = () => {
             onValueChange={code => compareCode(code)}
             // @ts-ignore
             highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
-            tabSize={4}
+            tabSize={1}
             padding={10}
             autoFocus={true}
+            insertSpaces={false}
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 16,
+              fontSize: fontSize,
               position: 'absolute',
               top: 0,
             }}

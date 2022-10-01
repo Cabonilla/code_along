@@ -77,7 +77,7 @@ const SideBar = (props: any) => {
 					</input>
 				</div>
 				<form className={mainInputStyles.dropdown_form}>
-					<label>Language </label>
+					<label>Language</label>
 					<select onChange={(e) => changeLang(e.target.value)}>
 						<>
 							{

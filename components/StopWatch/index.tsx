@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import mainInputStyles from '../../styles/MainInput.module.css';
 import Timer from "./Timer";
 
@@ -6,7 +6,7 @@ const StopWatch = (props: any) => {
 	const [isActive, setIsActive] = useState(true);
 	const [isPaused, setIsPaused] = useState(true);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		let interval: any = null;
 
 		if (isActive && isPaused === false) {

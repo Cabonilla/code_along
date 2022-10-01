@@ -23,6 +23,8 @@
 	padding: 0;
 	min-width: 225px;
 	max-width: 80vw;
+	max-height: 75vh;
+	min-height: auto;
 	position: relative;
 }
 
@@ -150,10 +152,11 @@
 
 .snippet_delete {
 	position: absolute;
-	bottom: .5em;
+	/* bottom: .5em; */
+	top: 0.5em;
 	right: 1.5em;
 	/* background-color: red; */
-	width: .5em;
+	width: .75vw;
 	height: auto;
 	z-index: 100;
 	color: rgba(0, 0, 0, 0.25);
@@ -230,6 +233,7 @@
 .dropdown_form>select {
 	background-color: rgba(0, 0, 0, 0.05);
 	font-size: .75em;
+	padding: .5em;
 }
 
 .dropdown_form {

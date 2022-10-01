@@ -17,7 +17,7 @@ const LineNumbers = (props: any) => {
 				padding={10}
 				style={{
 					fontFamily: '"Fira code", "Fira Mono", monospace',
-					fontSize: 16,
+					fontSize: props.fontSize,
 					position: "absolute",
 					left: "-2em",
 					opacity: "25%",

@@ -52,9 +52,10 @@ const SettingBar = (props: any) => {
 		props.setTimed(!props.timed);
 		props.setLockedInput(props.currInput);
 		props.setComparedInput('');
-		props.setLock(true);
 
 		props.lock ? null : props.setLock(true)
+		props.setTime(0)
+		props.timed ? null : props.setNowTiming(false);
 	}
 
 	const settingInput = () => {
