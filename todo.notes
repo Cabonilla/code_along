@@ -15,9 +15,9 @@ Notes:
 Ideas:
 TODO:
 [√] Finish timing function.
-[ ] Finish saving function.
-[ ] Finish settings w/ different UI's, languages, etc.
-[ ] Allow for saving code snippets a la Carbon.
+[√] Finish saving function.
+[√] Finish settings w/ different UI's, languages, etc.
+[√] Allow for saving code snippets a la Carbon.
 Activity Log:
 (Block 1)
 - Finished basic UI functionality. 
@@ -38,3 +38,10 @@ Activity Log:
 (Block 1)
 - Finished compared text opacity and overall saved functionality. Now, need to remove snippets individually and store times on left side. Pretty much done afterward, then applying.
 
+[2022-10-03]
+Notes:
+Ideas:
+TODO:
+[ ] Fix time storage for different days. 
+[ ] Fix typing bug on pasted code (tab parsing error).
+Activity Log:

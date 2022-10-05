@@ -62,8 +62,6 @@ const SettingBar = (props: any) => {
 		props.setSettings(!props.settings)
 	}
 
-	// console.log(exampleSnippet)
-
 	return (
 		<>
 			{

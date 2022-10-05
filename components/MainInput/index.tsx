@@ -70,7 +70,7 @@ const MainInput = () => {
       return langObj[lang]
     }
   }
-
+  
   const newDate = new Date().toLocaleDateString('en-us',
     {
       weekday: "long",
@@ -106,7 +106,7 @@ const MainInput = () => {
     }
   }, [transparentSlider])
 
-  const setCorrect = (original: string[], compared: string[]) => {
+  const setCorrect = (original: string[], compared: string[]): void => {
     if (compareArrs(original, compared)) {
       setCorrectChar(true)
     } else {
@@ -131,13 +131,14 @@ const MainInput = () => {
 
   const compareCode = (code: string) => {
     setComparedInput(code);
-    let lockedInputValue = lockedInput.replace(/[^\S\r\n]{4}/gi, "\t").split('')
-    let comparedInputValue = code.replace(/[^\S\r\n]{4}/gi, "\t").split('')
+    let lockedInputValue = lockedInput.replace(/[^\S\r\n\t]{4}/gi, "\t").split('')
+    let comparedInputValue = code.replace(/[^\S\r\n\t]{4}/gi, "\t").split('')
 
     let comparedInputIndex = comparedInputValue.length - 1
     let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
 
-    const spaceSpan = [" ", " ", " ", " "]
+    console.log(lockedInputValue);
+    console.log(comparedInputValue);
 
     if (lock && timed) {
       setResetTiming(false);
