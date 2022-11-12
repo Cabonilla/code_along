@@ -4,3 +4,8 @@
 /* purgecss end ignore */
 
 @tailwind utilities;
+
+.token.keyword.keyword-direction {
+	color: blue;
+	background-color: blue
+}

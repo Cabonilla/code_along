@@ -4,15 +4,16 @@ import mainInputStyles from '../../styles/MainInput.module.css';
 import Timer from '../StopWatch/Timer';
 
 const TimePanel = (props: any) => {
-	// console.log(props.storedTimes)
-	// console.log(props.finalTime)
 	const clearTimes = () => {
 		props.setStoredTimes({})
 	}
-	
-	const clearDate = () => {
-		props.storedTimes[props.newDate] = []
+
+	const clearDate = (event: any) => {
+		let keyText = event.target.parentElement.parentElement.firstChild.innerText
+		// console.log(event.target.parentElement.parentElement.firstChild.innerText)
+		delete props.storedTimes[keyText]
 		props.setStoredTimes(props.storedTimes)
+		// console.log("Delete Entry")
 	}
 
 	return (
@@ -26,8 +27,10 @@ const TimePanel = (props: any) => {
 					<div key={i} className={mainInputStyles.timing_list}>
 						<div className={mainInputStyles.timing_entry}>
 							<div className={mainInputStyles.date_entry}>
-								<p>{key}</p>
-								<FontAwesomeIcon className={mainInputStyles.clear_times} style={{ 'width': '.5em' }} onClick={() => clearDate()} icon={faXmark} title="Clear Date"></FontAwesomeIcon>
+								<p onClick={(e) => clearDate(e)} >{key}</p>
+								<div className="exit" onClick={(e) => clearDate(e)} >
+									<FontAwesomeIcon className={mainInputStyles.clear_times} style={{ 'width': '.5em' }} icon={faXmark} title="Clear Date"></FontAwesomeIcon>
+								</div>
 							</div>
 							<ul>
 								{

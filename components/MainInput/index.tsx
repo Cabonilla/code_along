@@ -51,8 +51,6 @@ const MainInput = () => {
 
   const [transparentSlider, setTransparentSlider] = useState<number>(25)
 
-  console.log(storedTimes);
-
   interface langType {
     [key: string]: Grammar;
   }
@@ -70,7 +68,7 @@ const MainInput = () => {
       return langObj[lang]
     }
   }
-  
+
   const newDate = new Date().toLocaleDateString('en-us',
     {
       weekday: "long",
@@ -78,6 +76,7 @@ const MainInput = () => {
       month: "short",
       day: "numeric"
     })
+  // const newDate = 'Saturday, Nov 13, 2022'
 
   useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
@@ -115,7 +114,6 @@ const MainInput = () => {
   }
 
   const compareArrs = (a: Array<string>, b: Array<string>) => {
-    // console.log(a, b)
     return a.every((char, idx) => char === b[idx])
   }
 
@@ -123,7 +121,12 @@ const MainInput = () => {
     let newTimeObj: any = {}
 
     let newTime = newDate
-    let newVal: any = []
+    let newVal: any;
+    if ((storedTimes as any)[newDate] === undefined) {
+      newVal = []
+    } else {
+      newVal = [...(storedTimes as any)[newDate]]
+    }
 
     newTimeObj[`${newTime}`] = newVal
     setStoredTimes({ ...storedTimes, ...newTimeObj })
@@ -137,16 +140,14 @@ const MainInput = () => {
     let comparedInputIndex = comparedInputValue.length - 1
     let slicedLocked = lockedInputValue.slice(0, comparedInputIndex + 1)
 
-    console.log(lockedInputValue);
-    console.log(comparedInputValue);
-
     if (lock && timed) {
       setResetTiming(false);
 
       if (slicedLocked.length > 0) {
         setNowTiming(true)
+        handleTime();
         if (storedTimes === 1 || storedTimes === null || Object.keys(storedTimes).length === 0) {
-          handleTime();
+          // handleTime();
         }
 
         if (
@@ -173,12 +174,6 @@ const MainInput = () => {
     } else {
       setCorrectChar(false);
     }
-
-    // let comparedText = document.querySelector(`.${mainInputStyles.text_area_compared}`)
-    
-    // if (comparedInputValue.length > 0) {
-    //   comparedText?.setAttribute('maxlength', `${lockedInputValue.length}`)
-    // }
   }
 
   return (
@@ -221,7 +216,7 @@ const MainInput = () => {
         />
         {!lock ? <Editor
           value={currInput}
-          onValueChange={code => setCurrInput(code)}
+          onValueChange={code => setCurrInput(code.replace(/[^\S\r\n\t]{4}/gi, "\t"))}
           // @ts-ignore
           highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
           tabSize={1}
