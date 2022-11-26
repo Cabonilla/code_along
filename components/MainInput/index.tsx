@@ -1,18 +1,21 @@
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Grammar, highlight, languages } from 'prismjs';
+import Prism, { Grammar, highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-typescript';
+// import 'prismjs/plugins/line-numbers/prism-line-numbers';
+// import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import useLocalStorageState from 'use-local-storage-state';
+// import '../../assets/libraries_cpy/prism-line-numbers.js';
 import mainInputStyles from '../../styles/MainInput.module.css';
 import HelpModal from '../HelpModal/index';
-import LineNumbers from '../LineNumbers';
+// import LineNumbers from '../LineNumbers';
 import SettingBar from '../SettingBar';
 import '../SideBar/index';
 import SideBar from '../SideBar/index';
@@ -77,6 +80,12 @@ const MainInput = () => {
       day: "numeric"
     })
   // const newDate = 'Saturday, Nov 13, 2022'
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      Prism.highlightAll();
+    }
+  }, [])
 
   useEffect(() => {
     let placeholderText = document.querySelector(`.${mainInputStyles.text_area}`)
@@ -179,13 +188,13 @@ const MainInput = () => {
   return (
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
-      <div className={mainInputStyles.textarea_box}>
-        <LineNumbers
+      <div className={`${mainInputStyles.textarea_box} `}>
+        {/* <LineNumbers
           currInput={currInput}
           currLanguage={currLanguage}
           fontSize={fontSize}
           setFontSize={setFontSize}
-        />
+        /> */}
         {timed
           ? <Stopwatch
             nowTiming={nowTiming}
@@ -218,13 +227,19 @@ const MainInput = () => {
           value={currInput}
           onValueChange={code => setCurrInput(code.replace(/[^\S\r\n\t]{4}/gi, "\t"))}
           // @ts-ignore
-          highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)}
+          highlight={code => highlight(code, pickLanguage(currLanguage), currLanguage)
+            // .split("\n")
+            // .map((line, i) => `<span class=${mainInputStyles.editorLineNumber}>${i + 1}</span>${line}`)
+            // .join("\n")
+          }
           tabSize={1}
           padding={10}
           insertSpaces={false}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
             fontSize: fontSize,
+            maxHeight: '50vh',
+            overflow: 'auto'
           }}
           textareaClassName={mainInputStyles.text_area}
           preClassName={mainInputStyles.pre_area}

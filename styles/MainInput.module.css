@@ -19,6 +19,15 @@
 	font-family: monospace;
 }
 
+.editorLineNumber {
+	position: absolute;
+	left: 0px;
+	color: #cccccc;
+	text-align: right;
+	width: 40px;
+	font-weight: 100;
+}
+
 .textarea_box {
 	padding: 0;
 	min-width: 225px;
@@ -391,6 +400,6 @@
 	width: 100%;
 }
 
-.checkbox_gray > label {
+.checkbox_gray>label {
 	font-size: .75em;
 }

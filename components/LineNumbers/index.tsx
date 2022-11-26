@@ -21,6 +21,8 @@ const LineNumbers = (props: any) => {
 					position: "absolute",
 					left: "-2em",
 					opacity: "25%",
+					maxHeight: '50vh',
+					overflow: 'hidden'
 				}}
 				textareaClassName={mainInputStyles.line_numbers}
 				preClassName={mainInputStyles.pre_line_numbers}
