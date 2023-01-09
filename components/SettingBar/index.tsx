@@ -31,7 +31,7 @@ const SettingBar = (props: any) => {
 			props.setLock(false);
 		}
 	}
-	
+
 	const trimCode = () => {
 		if (!props.lock) {
 			props.setCurrInput((props.currInput).replace(/[^\S\r\n]+$/gm, ''))

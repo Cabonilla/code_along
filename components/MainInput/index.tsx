@@ -3,16 +3,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Prism, { Grammar, highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx.js';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-typescript';
-// import 'prismjs/plugins/line-numbers/prism-line-numbers';
-// import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/themes/prism.css';
 import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import useLocalStorageState from 'use-local-storage-state';
-// import '../../assets/libraries_cpy/prism-line-numbers.js';
+import '../../assets/libraries_cpy/prism-line-numbers.js';
 import mainInputStyles from '../../styles/MainInput.module.css';
 import HelpModal from '../HelpModal/index';
 // import LineNumbers from '../LineNumbers';
@@ -81,10 +82,14 @@ const MainInput = () => {
     })
   // const newDate = 'Saturday, Nov 13, 2022'
 
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     Prism.highlightAll();
+  //   }
+  // }, [])
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      Prism.highlightAll();
-    }
+    Prism.highlightAll();
   }, [])
 
   useEffect(() => {
@@ -188,7 +193,7 @@ const MainInput = () => {
   return (
     <div className={mainInputStyles.textarea_container}>
       <h2>CodeAlong</h2>
-      <div className={`${mainInputStyles.textarea_box} `}>
+      <div className={`${mainInputStyles.textarea_box} ${'line-numbers'}`}>
         {/* <LineNumbers
           currInput={currInput}
           currLanguage={currLanguage}
@@ -242,7 +247,7 @@ const MainInput = () => {
             overflow: 'auto'
           }}
           textareaClassName={mainInputStyles.text_area}
-          preClassName={mainInputStyles.pre_area}
+          preClassName={`${mainInputStyles.pre_area} ${'line-numbers'}`}
           textareaId={mainInputStyles.text_area_id}
         /> : null}
 
